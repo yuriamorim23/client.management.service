@@ -10,5 +10,4 @@ public interface CustomerSegmentServiceImpl {
     CustomerSegmentDTO getSegmentById(Long id);
     CustomerSegmentDTO createSegment(CustomerSegmentDTO segmentDTO);
     void deleteSegment(Long id);
-
 }

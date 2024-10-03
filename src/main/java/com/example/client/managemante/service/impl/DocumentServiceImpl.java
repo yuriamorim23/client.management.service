@@ -9,5 +9,4 @@ public interface DocumentServiceImpl {
 	List<DocumentDTO> getDocumentsByCustomerId(Long customerId);
     DocumentDTO addDocument(DocumentDTO documentDTO);
     void deleteDocument(Long id);
-
 }

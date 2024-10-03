@@ -8,6 +8,5 @@ public interface ContactServiceImpl {
 	
 	 List<ContactDTO> getContactsByCustomerId(Long customerId);
 	 ContactDTO addContact(ContactDTO contactDTO);
-	 void deleteContact(Long id);	
-
+	 void deleteContact(Long id);
 }

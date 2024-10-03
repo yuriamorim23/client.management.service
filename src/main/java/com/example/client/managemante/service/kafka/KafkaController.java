@@ -15,7 +15,7 @@ public class KafkaController {
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @PostMapping("/publish")
-    public String sendMessageToKafka(@RequestParam("message") String message) {
+    public String sendMessageToKafka(@RequestParam String message) {
         kafkaTemplate.send(TOPIC, message);
         return "Message sent to Kafka Topic: " + TOPIC;
     }

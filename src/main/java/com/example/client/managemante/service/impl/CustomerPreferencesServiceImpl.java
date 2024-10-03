@@ -9,5 +9,4 @@ public interface CustomerPreferencesServiceImpl {
 	List<CustomerPreferencesDTO> getPreferencesByCustomerId(Long customerId);
     CustomerPreferencesDTO addPreference(CustomerPreferencesDTO customerPreferencesDTO);
     void deletePreference(Long id);
-
 }

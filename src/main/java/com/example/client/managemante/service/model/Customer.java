@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import com.example.client.managemante.service.enums.CustomerStatus;
 import com.example.client.managemante.service.enums.CustomerType;
 
@@ -52,8 +55,10 @@ public class Customer {
     @Column(nullable = false)
     private CustomerType customerType;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)

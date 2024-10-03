@@ -9,5 +9,4 @@ public interface InteractionHistoryServiceImpl {
 	List<InteractionHistoryDTO> getInteractionsByCustomerId(Long customerId);
     InteractionHistoryDTO addInteraction(InteractionHistoryDTO interactionHistoryDTO);
     void deleteInteraction(Long id);
-
 }

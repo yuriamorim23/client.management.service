@@ -9,5 +9,4 @@ public interface CustomerNoteServiceImpl {
 	List<CustomerNoteDTO> getNotesByCustomerId(Long customerId);
     CustomerNoteDTO addNote(CustomerNoteDTO customerNoteDTO);
     void deleteNote(Long id);
-	
 }
