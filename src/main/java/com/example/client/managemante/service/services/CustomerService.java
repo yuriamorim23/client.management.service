@@ -1,6 +1,7 @@
 package com.example.client.managemante.service.services;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,6 +22,7 @@ import com.example.client.managemante.service.model.Customer;
 import com.example.client.managemante.service.model.CustomerAddress;
 import com.example.client.managemante.service.model.CustomerSegment;
 import com.example.client.managemante.service.repository.CustomerRepository;
+import com.example.client.managemante.service.repository.CustomerSegmentRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -29,6 +31,9 @@ public class CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+    
+    @Autowired
+    private CustomerSegmentRepository customerSegmentRepository;
 
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
@@ -47,9 +52,30 @@ public class CustomerService {
         Customer customer = convertToEntity(customerDTO);
         customer.setCreatedAt(LocalDateTime.now());
         customer.setUpdatedAt(LocalDateTime.now());
+
+        if (customer.getAddresses() != null) {
+            customer.getAddresses().forEach(address -> address.setCustomer(customer));
+        }
+
+        if (customer.getContacts() != null) {
+            customer.getContacts().forEach(contact -> contact.setCustomer(customer));
+        }
+
+        if (customer.getSegments() != null) {
+            Set<CustomerSegment> processedSegments = new HashSet<>();
+            for (CustomerSegment segment : customer.getSegments()) {
+                CustomerSegment existingSegment = customerSegmentRepository.findByName(segment.getName())
+                        .orElseGet(() -> customerSegmentRepository.save(segment));
+                processedSegments.add(existingSegment);
+            }
+            customer.setSegments(processedSegments);
+        }
+
         Customer savedCustomer = customerRepository.save(customer);
         return convertToDTO(savedCustomer);
     }
+
+
 
     @Transactional
     public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
@@ -151,10 +177,8 @@ public class CustomerService {
         customer.setEmail(customerDTO.getEmail());
         customer.setPhoneNumber(customerDTO.getPhoneNumber());
         customer.setDateOfBirth(customerDTO.getDateOfBirth());
-
         customer.setStatus(CustomerStatus.valueOf(customerDTO.getStatus()));
         customer.setCustomerType(CustomerType.valueOf(customerDTO.getCustomerType()));
-
         customer.setCreatedAt(customerDTO.getCreatedAt());
         customer.setUpdatedAt(customerDTO.getUpdatedAt());
 
@@ -162,6 +186,8 @@ public class CustomerService {
             List<CustomerAddress> addressList = customerDTO.getAddresses().stream()
                     .map(this::convertDTOToAddress)
                     .collect(Collectors.toList());
+
+            addressList.forEach(address -> address.setCustomer(customer));
             customer.setAddresses(addressList);
         }
 
@@ -169,6 +195,8 @@ public class CustomerService {
             List<Contact> contactList = customerDTO.getContacts().stream()
                     .map(this::convertDTOToContact)
                     .collect(Collectors.toList());
+
+            contactList.forEach(contact -> contact.setCustomer(customer));
             customer.setContacts(contactList);
         }
 
@@ -181,6 +209,7 @@ public class CustomerService {
 
         return customer;
     }
+
 
     private CustomerAddress convertDTOToAddress(CustomerAddressDTO addressDTO) {
         CustomerAddress address = new CustomerAddress();
